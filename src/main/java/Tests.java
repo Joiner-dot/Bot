@@ -22,29 +22,21 @@ public class Tests {
 
     @Test
     public void centerbankTest() {
-        bankCurrency = new BankCurrency();
-        String name = bankCurrency.centrBank("28.06.2020", "иен");
+        bankService = new BankService();
+        String name = bankService.centerBank("28.06.2020", "иен");
         String[] splitname = name.split("\n");
-        Assert.assertEquals("Центробанк", splitname[0]);
-        Assert.assertEquals("Фунт стерлингов Соединенного королевства", splitname[1]);
-        splitdouble = splitname[2].split(" ");
+        Assert.assertEquals("10 Японских иен", splitname[0]);
+        splitdouble = splitname[1].split(" ");
         Double.parseDouble(splitdouble[0].replaceAll(",", "."));
-        Assert.assertEquals("Белорусский рубль", splitname[4]);
-        splitdouble = splitname[5].split(" ");
-        Double.parseDouble(splitdouble[0].replaceAll(",", "."));
-        Assert.assertEquals("Доллар США", splitname[7]);
-        splitdouble = splitname[8].split(" ");
-        Double.parseDouble(splitdouble[0].replaceAll(",", "."));
-        Assert.assertEquals("Евро", splitname[10]);
     }
 
     @Test
     public void currencyOfRegionBank() {
-        bankCurrency = new BankCurrency();
-        String name = bankCurrency.currencyBank("usd", "sankt-peterburg");
+        bankService = new BankService();
+        String name = bankService.currencyofRegion("доллар в санкт-петербурге");
         String[] splitname = name.split("\n");
-        Assert.assertEquals("SANKT-PETERBURG", splitname[0]);
-        Assert.assertEquals("USD", splitname[1]);
+        Assert.assertEquals("Санкт-Петербург", splitname[0]);
+        Assert.assertEquals("Доллар", splitname[1]);
         splitdouble = splitname[3].split(" ");
         Double.parseDouble(splitdouble[1].replaceAll(",", "."));
         splitdouble = splitname[4].split(" ");
@@ -55,11 +47,11 @@ public class Tests {
 
     @Test
     public void bestBankTest() {
-        bankCurrency = new BankCurrency();
-        String message = bankCurrency.bestBank("usd", "sankt-peterburg");
+        bankService = new BankService();
+        String message = bankService.bestBankCurrency("лучший доллар в санкт-петербурге");
         String[] splitname = message.split("\n");
-        Assert.assertEquals("SANKT-PETERBURG", splitname[0]);
-        Assert.assertEquals("USD", splitname[1]);
+        Assert.assertEquals("Санкт-Петербург", splitname[0]);
+        Assert.assertEquals("Доллар", splitname[1]);
         splitdouble = splitname[3].split(" ");
         Double.parseDouble(splitdouble[1]);
         splitdouble = splitname[4].split(" ");
