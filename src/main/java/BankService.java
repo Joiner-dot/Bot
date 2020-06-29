@@ -93,16 +93,23 @@ public class BankService {
 
         for (Pair<String, String> pair : region) {
 
-            if (!(pair.getFirst().equalsIgnoreCase("Уфа"))) {
-                if (!pair.getSecond().equals("Красноярск")
-                        && !pair.getFirst().equals("Краснодар")
-                        && !pair.getFirst().equals("Омск")
-                        && name.toLowerCase().contains(pair.getFirst().toLowerCase().substring(0, 4))) {
+            if (!(pair.getFirst().equalsIgnoreCase("Москва"))
+                    && !(pair.getFirst().equals("Омск"))
+                    && !(pair.getFirst().equals("Нижний Новгород"))
+            ) {
+                if (name.toLowerCase()
+                        .contains(pair.getFirst().toLowerCase().substring(0, pair.getFirst().length() - 1))) {
                     urlname.add(pair);
                 }
             }
-            if (pair.getFirst().equals("Уфа")
-                    && name.toLowerCase().contains(pair.getFirst().toLowerCase().substring(0, 2))) {
+            if (pair.getFirst().equals("Москва")
+                    && name.toLowerCase().contains(pair.getFirst().toLowerCase().substring(0, 4))) {
+                urlname.add(pair);
+            }
+
+            if (pair.getFirst().equals("Нижний Новгород")
+                    && name.toLowerCase().contains("нижн")
+                    && name.toLowerCase().contains("новгород")) {
                 urlname.add(pair);
             }
 
@@ -112,10 +119,6 @@ public class BankService {
                 urlname.add(pair);
             }
 
-            if ((pair.getFirst().equals("Красноярск") || pair.getFirst().equals("Краснодар"))
-                    && name.toLowerCase().contains(pair.getFirst().toLowerCase().substring(0, 7))) {
-                urlname.add(pair);
-            }
         }
         return urlname;
     }
