@@ -96,6 +96,7 @@ public class BankService {
             if (!(pair.getFirst().equalsIgnoreCase("Уфа"))) {
                 if (!pair.getSecond().equals("Красноярск")
                         && !pair.getFirst().equals("Краснодар")
+                        && !pair.getFirst().equals("Омск")
                         && name.toLowerCase().contains(pair.getFirst().toLowerCase().substring(0, 4))) {
                     urlname.add(pair);
                 }
@@ -104,6 +105,13 @@ public class BankService {
                     && name.toLowerCase().contains(pair.getFirst().toLowerCase().substring(0, 2))) {
                 urlname.add(pair);
             }
+
+            if (pair.getFirst().equals("Омск")
+                    && (name.toLowerCase().contains(" " + pair.getFirst().toLowerCase().substring(0, 4))
+                    || name.toLowerCase().indexOf(pair.getFirst().toLowerCase().substring(0, 4)) == 0)) {
+                urlname.add(pair);
+            }
+
             if ((pair.getFirst().equals("Красноярск") || pair.getFirst().equals("Краснодар"))
                     && name.toLowerCase().contains(pair.getFirst().toLowerCase().substring(0, 7))) {
                 urlname.add(pair);
