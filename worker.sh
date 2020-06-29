@@ -1,0 +1,1 @@
+java -ea -jar out/artifacts/Bot_jar/Bot.jar

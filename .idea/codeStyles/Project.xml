@@ -1,0 +1,7 @@
+<component name="ProjectCodeStyleConfiguration">
+  <code_scheme name="Project" version="173">
+    <JavaCodeStyleSettings>
+      <option name="SPACE_INSIDE_ONE_LINE_ENUM_BRACES" value="true" />
+    </JavaCodeStyleSettings>
+  </code_scheme>
+</component>
