@@ -14,7 +14,7 @@ public class BankService {
 
 
     BankService() {
-        region.add(new Pair<>("Cанкт-петербург", "sankt-peterburg"));
+        region.add(new Pair<>("Санкт-Петербург", "sankt-peterburg"));
         region.add(new Pair<>("Барнаул", "barnaul"));
         region.add(new Pair<>("Москва", "moskva"));
         region.add(new Pair<>("Благовещенск", "blagovesschensk"));
@@ -42,6 +42,8 @@ public class BankService {
         region.add(new Pair<>("Ставрополь", "stavropol~"));
         region.add(new Pair<>("Новосибирск", "novosibirsk"));
         region.add(new Pair<>("Владивосток", "vladivostok"));
+        region.add(new Pair<>("Томск", "tomsk"));
+        region.add(new Pair<>("Омск", "omsk"));
         valute.add(new Pair<>("Доллар", "usd"));
         valute.add(new Pair<>("Евро", "eur"));
         valute.add(new Pair<>("Юань", "cny"));
@@ -92,18 +94,18 @@ public class BankService {
         for (Pair<String, String> pair : region) {
 
             if (!(pair.getFirst().equalsIgnoreCase("Уфа"))) {
-                if (!pair.getSecond().equals("красноярск")
-                        && !pair.getFirst().equals("краснодар")
-                        && name.toLowerCase().contains(pair.getFirst().substring(0, 4).toLowerCase())) {
+                if (!pair.getSecond().equals("Красноярск")
+                        && !pair.getFirst().equals("Краснодар")
+                        && name.toLowerCase().contains(pair.getFirst().toLowerCase().substring(0, 4))) {
                     urlname.add(pair);
                 }
             }
             if (pair.getFirst().equals("Уфа")
-                    && name.toLowerCase().contains(pair.getFirst().substring(0, 2).toLowerCase())) {
+                    && name.toLowerCase().contains(pair.getFirst().toLowerCase().substring(0, 2))) {
                 urlname.add(pair);
             }
-            if ((pair.getFirst().equals("красноярск") || pair.getFirst().equals("краснодар"))
-                    && name.toLowerCase().contains(pair.getFirst().substring(0, 7).toLowerCase())) {
+            if ((pair.getFirst().equals("Красноярск") || pair.getFirst().equals("Краснодар"))
+                    && name.toLowerCase().contains(pair.getFirst().toLowerCase().substring(0, 7))) {
                 urlname.add(pair);
             }
         }
