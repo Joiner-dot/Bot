@@ -106,7 +106,7 @@ public class BankCurrency {
     }
 
     public String centrBank(String date, String valute) {
-        LOGGER.info("Берём информацию о васюте в указанном регионе");
+        LOGGER.info("Берём информацию о васюте в центробанке");
         String message = "";
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
