@@ -203,8 +203,7 @@ public class BankService {
     public String centerBank(String date, String valute) {
         Pair<String, String> urlvalute = nameOfValute(valute);
         String answer = bankCurrency.centrBank(date, urlvalute.getSecond());
-        if (urlvalute.getFirst().equals("xz"))
-        {
+        if (urlvalute.getFirst().equals("xz")) {
             return "Не понимаю валюту";
         }
         if (answer.equals("")) {
