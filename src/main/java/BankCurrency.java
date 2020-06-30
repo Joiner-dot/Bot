@@ -146,7 +146,7 @@ public class BankCurrency {
         currencyBank(urlvalute, urlregion);
         for (Bank bank : service.getBanks()) {
             if ((bank.getSell()) > max) {
-                max = bank.getBuy();
+                max = bank.getSell();
                 bestbank = bank;
             }
         }
@@ -166,7 +166,7 @@ public class BankCurrency {
         currencyBank(urlvalute, urlregion);
         for (Bank bank : service.getBanks()) {
             if ((bank.getBuy()) < max) {
-                max = bank.getSell();
+                max = bank.getBuy();
                 bestbank = bank;
             }
         }
