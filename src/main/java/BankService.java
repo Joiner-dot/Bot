@@ -68,7 +68,9 @@ public class BankService {
         this.banks = banks;
     }
 
-    //Добавление банка и проверка на повторение
+    /**
+     * Добавление банка и проверка на повторение
+     */
     public void addingBank(String name, double sell, double buy) {
         if (banks.size() < 5) {
             for (Bank bank : banks) {
