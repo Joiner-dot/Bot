@@ -12,6 +12,7 @@ public class Bot extends TelegramLongPollingBot {
     private BankService bankService;
     private boolean flag = false;
     private String centerbankmessage;
+    private boolean right = false;
 
 
     public void onUpdateReceived(Update update) {
@@ -36,6 +37,7 @@ public class Bot extends TelegramLongPollingBot {
             }
             //Если уже указана валюта для центробанка
             if (flag) {
+                right = true;
                 LOGGER.info("Просьба указать дату в правильном формате");
                 try {
                     flag = false;
@@ -48,6 +50,7 @@ public class Bot extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
             } else if (update.getMessage().getText().equals("/start")) {
+                right = true;
                 LOGGER.info("Просьба о помощи");
                 try {
                     sendMsg(update.getMessage().getChatId().toString(),
@@ -62,6 +65,7 @@ public class Bot extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
             } else if (update.getMessage().getText().equals("/help")) {
+                right = true;
                 LOGGER.info("Просьба о помощи");
                 try {
                     sendMsg(update.getMessage().getChatId().toString(),
@@ -76,6 +80,7 @@ public class Bot extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
             } else if (update.getMessage().getText().equals("/city")) {
+                right = true;
                 LOGGER.info("Вывод городов регионов");
                 bankService = new BankService();
                 try {
@@ -87,6 +92,7 @@ public class Bot extends TelegramLongPollingBot {
                 }
             } else if (update.getMessage().getText().toLowerCase().contains("центробанк")
                     || update.getMessage().getText().toLowerCase().contains("цб")) {
+                right = true;
                 LOGGER.info("Пользователь хочет узнать курс валюты в центробанке");
                 flag = true;
                 centerbankmessage = update.getMessage().getText();
@@ -100,6 +106,7 @@ public class Bot extends TelegramLongPollingBot {
                 }
 
             } else if (update.getMessage().getText().toLowerCase().contains("спасибо")) {
+                right = true;
                 LOGGER.info("Бота поблагодарили");
                 try {
                     sendMsg(update.getMessage().getChatId().toString(), "Обращайтесь");
@@ -109,6 +116,7 @@ public class Bot extends TelegramLongPollingBot {
                 }
             } else if (!update.getMessage().getText().toLowerCase().contains("лучш")
                     && !update.getMessage().getText().toLowerCase().contains("выгодн")) {
+                right = true;
                 LOGGER.info("Отправить курс валюты в регионе");
                 bankService = new BankService();
                 try {
@@ -121,7 +129,9 @@ public class Bot extends TelegramLongPollingBot {
             } else if ((update.getMessage().getText().toLowerCase().contains("лучш")
                     || update.getMessage().getText().toLowerCase().contains("выгодн"))
                     && (update.getMessage().getText().toLowerCase().contains("купи")
-                    || update.getMessage().getText().toLowerCase().contains("покуп"))) {
+                    || update.getMessage().getText().toLowerCase().contains("покуп")
+                    || update.getMessage().getText().toLowerCase().contains("купл"))) {
+                right = true;
                 LOGGER.info("Отправить лушчий курс покупки валюты у банка в регионе");
                 bankService = new BankService();
                 try {
@@ -135,6 +145,7 @@ public class Bot extends TelegramLongPollingBot {
             if ((update.getMessage().getText().toLowerCase().contains("лучш")
                     || update.getMessage().getText().toLowerCase().contains("выгодн"))
                     && update.getMessage().getText().toLowerCase().contains("прода")) {
+                right = true;
                 LOGGER.info("Отправить лушчий курс продажи валюты у банка в регионе");
                 bankService = new BankService();
                 try {
@@ -145,9 +156,26 @@ public class Bot extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
             }
+            if (!right) {
+                LOGGER.info("Непонятно что написано");
+                try {
+                    sendMsg(update.getMessage().getChatId().toString(),
+                            "Я вас не понимаю, но вы можете спросить меня какой курс валюты в" +
+                                    " городе региона или какой курс валюты лучший в городе региона\n" +
+                                    "Или какой курс валюты в центробанке\n" +
+                                    "\nНапример: курс доллара в казани" +
+                                    "\nИли: курс евро у центробанка (далее нужно будет указать дату следующим сообщением) \n" +
+                                    "Кроме того, можно узнать список городов их разных регионов командой /city ");
+                } catch (TelegramApiException e) {
+                    LOGGER.warning("Отправлено пустое сообщение");
+                    e.printStackTrace();
+                }
+            }
+            right = false;
         } else if (update.getMessage().getChat().isGroupChat()) {
             LOGGER.info("Сообщение из группового чата");
             if (flag) {
+                right = true;
                 LOGGER.info("Просьба указать дату в правильном формате");
                 try {
                     flag = false;
@@ -162,6 +190,7 @@ public class Bot extends TelegramLongPollingBot {
                 }
             } else if (update.getMessage().getText().contains("/city")
                     && update.getMessage().getText().contains("@SonofFartherbot")) {
+                right = true;
                 bankService = new BankService();
                 LOGGER.info("Просьба о вывести города регионов в групповом чате");
                 try {
@@ -173,6 +202,7 @@ public class Bot extends TelegramLongPollingBot {
                 }
             } else if (update.getMessage().getText().contains("/start")
                     && update.getMessage().getText().contains("@SonofFartherbot")) {
+                right = true;
                 LOGGER.info("Просьба о помощи в групповом чате");
                 try {
                     sendMsg(update.getMessage().getChatId().toString(),
@@ -190,6 +220,7 @@ public class Bot extends TelegramLongPollingBot {
                 }
             } else if (update.getMessage().getText().contains("/help")
                     && update.getMessage().getText().contains("@SonofFartherbot")) {
+                right = true;
                 LOGGER.info("Просьба о помощи в групповом чате");
                 try {
                     sendMsg(update.getMessage().getChatId().toString(),
@@ -207,6 +238,7 @@ public class Bot extends TelegramLongPollingBot {
                 }
             } else if (update.getMessage().getText().toLowerCase().contains("спасибо")
                     && update.getMessage().getText().contains("@SonofFartherbot")) {
+                right = true;
                 LOGGER.info("Благодарность в групповом чатее");
                 try {
                     sendMsg(update.getMessage().getChatId().toString(), "Обращайтесь");
@@ -217,6 +249,7 @@ public class Bot extends TelegramLongPollingBot {
             } else if ((update.getMessage().getText().toLowerCase().contains("центробанк")
                     || update.getMessage().getText().toLowerCase().contains("цб"))
                     && update.getMessage().getText().contains("@SonofFartherbot")) {
+                right = true;
                 LOGGER.info("Пользователь хочет узнать курс валюты в центробанке");
                 flag = true;
                 centerbankmessage = update.getMessage().getText();
@@ -232,6 +265,7 @@ public class Bot extends TelegramLongPollingBot {
             } else if (update.getMessage().getText().contains("@SonofFartherbot") &&
                     !update.getMessage().getText().toLowerCase().contains("лучш")
                     && !update.getMessage().getText().toLowerCase().contains("выгодн")) {
+                right = true;
                 LOGGER.info("Отправка в гурупповой чат курса валюты по региону");
                 bankService = new BankService();
                 try {
@@ -245,7 +279,9 @@ public class Bot extends TelegramLongPollingBot {
                     update.getMessage().getText().toLowerCase().contains("лучш")
                     && update.getMessage().getText().toLowerCase().contains("выгодн")
                     && (update.getMessage().getText().toLowerCase().contains("купи")
-                    || update.getMessage().getText().toLowerCase().contains("покуп"))) {
+                    || update.getMessage().getText().toLowerCase().contains("покуп")
+                    || update.getMessage().getText().toLowerCase().contains("купл"))) {
+                right = true;
                 LOGGER.info("Отправить в групповой чат лушчий курс покупки валюты у банка в регионе");
                 bankService = new BankService();
                 try {
@@ -256,10 +292,11 @@ public class Bot extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
             }
-            if ((update.getMessage().getText().contains("@SonofFartherbot")
-                    && update.getMessage().getText().toLowerCase().contains("лучш")
+            if (update.getMessage().getText().contains("@SonofFartherbot")
+                    && (update.getMessage().getText().toLowerCase().contains("лучш")
                     || update.getMessage().getText().toLowerCase().contains("выгодн"))
                     && update.getMessage().getText().toLowerCase().contains("прода")) {
+                right = true;
                 LOGGER.info("Отправить в групповой чат лушчий курс продажи валюты у банка в регионе");
                 bankService = new BankService();
                 try {
@@ -270,6 +307,23 @@ public class Bot extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
             }
+            System.out.println(right);
+            if ((!right) && update.getMessage().getText().contains("@SonofFartherbot")) {
+                LOGGER.info("Непонятно что написано");
+                try {
+                    sendMsg(update.getMessage().getChatId().toString(),
+                            "Я вас не понимаю, но вы можете спросить меня какой курс валюты в" +
+                                    " городе региона или какой курс валюты лучший в городе региона\n" +
+                                    "Или какой курс валюты в центробанке\n" +
+                                    "\nНапример: курс доллара в казани" +
+                                    "\nИли: курс евро у центробанка (далее нужно будет указать дату следующим сообщением) \n" +
+                                    "Кроме того, можно узнать список городов их разных регионов командой /city ");
+                } catch (TelegramApiException e) {
+                    LOGGER.warning("Отправлено пустое сообщение");
+                    e.printStackTrace();
+                }
+            }
+            right = false;
         }
     }
 
