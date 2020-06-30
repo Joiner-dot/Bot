@@ -5,7 +5,6 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 public class Tests {
     Bot bot = new Bot();
     String[] splitdouble;
-    BankCurrency bankCurrency = null;
     BankService bankService = new BankService();
 
     @Test
@@ -35,7 +34,6 @@ public class Tests {
         String name = bankService.currencyofRegion("доллар в санкт-петербурге");
         String[] splitname = name.split("\n");
         Assert.assertEquals("Санкт-Петербург", splitname[0]);
-        Assert.assertEquals("Доллар", splitname[1]);
         splitdouble = splitname[3].split(" ");
         Double.parseDouble(splitdouble[1].replaceAll(",", "."));
         splitdouble = splitname[4].split(" ");
@@ -45,18 +43,15 @@ public class Tests {
     }
 
     @Test
-    public void bestBankTest() {
+    public void bestBankSellTest() {
         bankService = new BankService();
         String message = bankService.bestBankCurrencySell("лучшая продажа банку доллара в санкт-петербурге");
         String[] splitname = message.split("\n");
-        Assert.assertEquals("Санкт-Петербург", splitname[0]);
-        Assert.assertEquals("Доллар", splitname[1]);
-        Assert.assertEquals("Лучшая продажа у банка", splitname[2]);
+        Assert.assertEquals("Лучшая покупка у банка", splitname[2]);
         splitdouble = splitname[4].split(" ");
         Double.parseDouble(splitdouble[1]);
         splitdouble = splitname[5].split(" ");
         Double.parseDouble(splitdouble[1]);
-
     }
 
     @Test
@@ -64,14 +59,11 @@ public class Tests {
         bankService = new BankService();
         String message = bankService.bestBankCurrencyBuy("лучшая покупка у банка доллара в санкт-петербурге");
         String[] splitname = message.split("\n");
-        Assert.assertEquals("Санкт-Петербург", splitname[0]);
-        Assert.assertEquals("Доллар", splitname[1]);
-        Assert.assertEquals("Лучшая покупка у банка", splitname[2]);
+        Assert.assertEquals("Лучшая продажа банку", splitname[2]);
         splitdouble = splitname[4].split(" ");
         Double.parseDouble(splitdouble[1]);
         splitdouble = splitname[5].split(" ");
         Double.parseDouble(splitdouble[1]);
-
     }
 
 

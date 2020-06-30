@@ -25,7 +25,6 @@ public class BankCurrency {
         LOGGER.info("Берём информацию о васюте в указанном регионе");
         String message = "";
         service = new BankService();
-        Element element = null;
         org.jsoup.nodes.Document doc = null;
         try {
             doc = Jsoup.connect("https://ru.myfin.by/currency/" + valute + "/" + region)
@@ -35,18 +34,40 @@ public class BankCurrency {
         } catch (IOException e) {
             LOGGER.warning("Неверный url сайта для сайта myfin.ru");
         }
-        int j = 0;
-        int i = 0;
+
+        parsingSiteMyfin(doc, valute);
+
+        if (service.getBanks().isEmpty()) {
+            try {
+                doc = Jsoup.connect("https://www.banki.ru/products/currency/cash/" + valute + "/" + region + "/")
+                        .userAgent("Chrome/4.0.249.0 Safari/532.5")
+                        .referrer("http://www.google.com")
+                        .get();
+            } catch (IOException e) {
+                LOGGER.warning("Неверный url сайта");
+            }
+
+            parsingBankru(doc);
+
+        }
+        if (service.getBanks().isEmpty()) {
+            return "Тут о такой валюте не знают";
+        }
+        for (Bank bank : service.getBanks()) {
+            message += (bank.getName() + "\nПокупка: "
+                    + bank.getSell() + " RUB\nПродажа: " + bank.getBuy() + " RUB\n\n");
+        }
+        return message;
+    }
+
+    private void parsingSiteMyfin(org.jsoup.nodes.Document doc, String valute) {
+        String message = "";
         double sell;
         double buy;
-        Elements list1 = null;
-        Elements lists = null;
-        Elements list2 = null;
-
+        int j = 0;
+        int i = 0;
         try {
-            list1 = doc.select("div.header-city__city");
-            lists = doc.select("a.font-bold");
-            list2 = doc.select("tr.tr-turn");
+            Elements list2 = doc.select("tr.tr-turn");
             Elements list2name = list2.select("td.bank_name");
             Elements list2currency = list2.select("td." + valute.toUpperCase());
             while (j < list2name.size()) {
@@ -61,47 +82,32 @@ public class BankCurrency {
         } catch (NullPointerException e) {
             LOGGER.warning("Нет таких тегов для сайта myfin.ru");
         }
-        i = 0;
-        if (service.getBanks().isEmpty()) {
-            try {
-                doc = Jsoup.connect("https://www.banki.ru/products/currency/cash/" + valute + "/" + region + "/")
-                        .userAgent("Chrome/4.0.249.0 Safari/532.5")
-                        .referrer("http://www.google.com")
-                        .get();
-            } catch (IOException e) {
-                LOGGER.warning("Неверный url сайта");
+    }
+
+    private void parsingBankru(org.jsoup.nodes.Document doc) {
+        Element element;
+        int j = 0;
+        int i = 0;
+        double sell;
+        double buy;
+        String message;
+        try {
+            Elements lists = doc.select("a.font-bold");
+            Elements list2 = doc.select("td.font-size-large");
+            while (j < list2.size()) {
+                element = list2.get(j);
+                sell = Double.parseDouble(element.text().split(" ")[0].replaceAll(",", "."));
+                j++;
+                element = list2.get(j);
+                buy = Double.parseDouble(element.text().split(" ")[0].replaceAll(",", "."));
+                j++;
+                message = lists.get(i).text();
+                i++;
+                service.addingBank(message, sell, buy);
             }
-            lists = doc.select("a.font-bold");
-            list2 = doc.select("td.font-size-large");
-            j = 0;
-            try {
-
-                while (j < list2.size()) {
-                    element = list2.get(j);
-                    sell = Double.parseDouble(element.text().split(" ")[0].replaceAll(",", "."));
-                    j++;
-                    element = list2.get(j);
-                    buy = Double.parseDouble(element.text().split(" ")[0].replaceAll(",", "."));
-                    j++;
-                    message = lists.get(i).text();
-                    i++;
-                    service.addingBank(message, sell, buy);
-                }
-            } catch (NullPointerException e) {
-                LOGGER.warning("Нет таких тегов");
-            }
+        } catch (NullPointerException e) {
+            LOGGER.warning("Нет таких тегов для banki.ru");
         }
-        if (service.getBanks().isEmpty()) {
-            return "Тут о такой валюте не знают";
-
-        }
-
-        message = "";
-        for (Bank bank : service.getBanks()) {
-            message += (bank.getName() + "\nПокупка: "
-                    + bank.getSell() + " RUB\nПродажа: " + bank.getBuy() + " RUB\n\n");
-        }
-        return message;
     }
 
     public String centrBank(String date, String valute) {
@@ -133,7 +139,7 @@ public class BankCurrency {
 
     public String bestBankSell(String urlvalute, String urlregion) {
 
-        LOGGER.info("Вычисляем банк с лючшим курсом продажи банку указанной валюты в регионе");
+        LOGGER.info("Вычисляем банк с лучшим курсом продажи банку указанной валюты в регионе");
         service = new BankService();
         double max = -1;
         Bank bestbank = null;
@@ -147,13 +153,13 @@ public class BankCurrency {
         if (service.getBanks().isEmpty()) {
             return "Боюсь, что такого тут не делают";
         }
-        return ("Лучшая продажа у банка\n" + bestbank.getName() + "\nПокупка: " +
+        return ("Лучшая продажа банку\n" + bestbank.getName() + "\nПокупка: " +
                 bestbank.getSell() + " RUB\nПродажа: " + bestbank.getBuy() + " RUB\n\n");
     }
 
     public String bestBankBuy(String urlvalute, String urlregion) {
 
-        LOGGER.info("Вычисляем банк с лючшим курсом покупки у банка указанной валюты в регионе");
+        LOGGER.info("Вычисляем банк с лучшим курсом покупки у банка указанной валюты в регионе");
         service = new BankService();
         double max = 100000;
         Bank bestbank = null;

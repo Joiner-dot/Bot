@@ -36,7 +36,7 @@ public class Bot extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
             }
-            //Если уже указана валюта для центробанка
+            // Если уже указана валюта для центробанка
             if (flag) {
                 right = true;
                 LOGGER.info("Просьба указать дату в правильном формате");
@@ -176,6 +176,8 @@ public class Bot extends TelegramLongPollingBot {
                 }
             }
             right = false;
+
+            // Если чат групповой
         } else if (update.getMessage().getChat().isGroupChat()) {
             LOGGER.info("Сообщение из группового чата");
             if (flag) {
@@ -282,7 +284,7 @@ public class Bot extends TelegramLongPollingBot {
                 }
             } else if (update.getMessage().getText().contains("@SonofFartherbot") &&
                     (update.getMessage().getText().toLowerCase().contains("лучш")
-                    || update.getMessage().getText().toLowerCase().contains("выгодн"))
+                            || update.getMessage().getText().toLowerCase().contains("выгодн"))
                     && (update.getMessage().getText().toLowerCase().contains("купи")
                     || update.getMessage().getText().toLowerCase().contains("покуп")
                     || update.getMessage().getText().toLowerCase().contains("купл"))) {

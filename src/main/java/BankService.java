@@ -84,7 +84,33 @@ public class BankService {
         }
     }
 
-    //Перевод названия банка в url формат
+    private boolean checkRegion(String name, Pair<String, String> pair) {
+        if (!(pair.getFirst().equalsIgnoreCase("Москва"))
+                && !(pair.getFirst().equals("Омскъ"))
+                && !(pair.getFirst().equals("Нижний Новгородъ"))
+        ) {
+            if (name.toLowerCase()
+                    .contains(pair.getFirst().toLowerCase().substring(0, pair.getFirst().length() - 1))) {
+                return true;
+            }
+        } else if (pair.getFirst().equals("Москва")
+                && name.toLowerCase().contains(pair.getFirst().toLowerCase().substring(0, 4))) {
+            return true;
+        } else if (pair.getFirst().equals("Нижний Новгородъ")
+                && name.toLowerCase().contains("нижн")
+                && name.toLowerCase().contains("новгород")) {
+            return true;
+        } else if (pair.getFirst().equals("Омскъ")
+                && (name.toLowerCase().contains(" " + pair.getFirst().toLowerCase().substring(0, 4))
+                || name.toLowerCase().indexOf(pair.getFirst().toLowerCase().substring(0, 4)) == 0)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Перевод названия банка в url формат
+     */
     public List<Pair<String, String>> nameOfRegion(String name) {
 
 
@@ -92,32 +118,9 @@ public class BankService {
 
         for (Pair<String, String> pair : region) {
 
-            if (!(pair.getFirst().equalsIgnoreCase("Москва"))
-                    && !(pair.getFirst().equals("Омск"))
-                    && !(pair.getFirst().equals("Нижний Новгород"))
-            ) {
-                if (name.toLowerCase()
-                        .contains(pair.getFirst().toLowerCase().substring(0, pair.getFirst().length() - 1))) {
-                    urlname.add(pair);
-                }
-            }
-            if (pair.getFirst().equals("Москва")
-                    && name.toLowerCase().contains(pair.getFirst().toLowerCase().substring(0, 4))) {
+            if (checkRegion(name, pair)) {
                 urlname.add(pair);
             }
-
-            if (pair.getFirst().equals("Нижний Новгород")
-                    && name.toLowerCase().contains("нижн")
-                    && name.toLowerCase().contains("новгород")) {
-                urlname.add(pair);
-            }
-
-            if (pair.getFirst().equals("Омск")
-                    && (name.toLowerCase().contains(" " + pair.getFirst().toLowerCase().substring(0, 4))
-                    || name.toLowerCase().indexOf(pair.getFirst().toLowerCase().substring(0, 4)) == 0)) {
-                urlname.add(pair);
-            }
-
         }
         return urlname;
     }
@@ -125,18 +128,18 @@ public class BankService {
     public String listOfRegion() {
         String name = "";
         for (Pair<String, String> pair : region) {
-            if(pair.getFirst().contains("ъ")) {
-                name += pair.getFirst().substring(0,pair.getFirst().length()-1) + "\n";
-            }
-            else
-            {
+            if (pair.getFirst().contains("ъ")) {
+                name += pair.getFirst().substring(0, pair.getFirst().length() - 1) + "\n";
+            } else {
                 name += pair.getFirst() + "\n";
             }
         }
         return name;
     }
 
-    // аналогично с валютой
+    /**
+     * Аналогично с валютой
+     */
     private Pair<String, String> nameOfValute(String name) {
         for (int i = 0; i < valute.size(); i++) {
             if (name.toLowerCase()
@@ -149,7 +152,9 @@ public class BankService {
         return new Pair<String, String>("xz", "xz");
     }
 
-    //Курс валют по региону
+    /**
+     * Курс валют по региону
+     */
     public String currencyofRegion(String name) {
         Pair<String, String> urlvalue = nameOfValute(name);
         List<Pair<String, String>> urlregion = nameOfRegion(name);
@@ -161,7 +166,6 @@ public class BankService {
             return "Не понимаю город";
         }
         for (int i = 0; i < urlregion.size(); i++) {
-
             if (urlregion.get(i).getFirst().contains("ъ")) {
                 answer += urlregion.get(i).getFirst().substring(0, urlregion.get(i).getFirst().length() - 1) + "\n" + urlvalue.getFirst() +
                         "\n" + bankCurrency.currencyBank(urlvalue.getSecond(), urlregion.get(i).getSecond())
@@ -175,7 +179,9 @@ public class BankService {
         return answer;
     }
 
-    //Лучший банк по курсу в регионе
+    /**
+     * Лучший банк по курсу в регионе
+     */
     public String bestBankCurrencySell(String name) {
         Pair<String, String> urlvalue = nameOfValute(name);
         List<Pair<String, String>> urlregion = nameOfRegion(name);
@@ -187,9 +193,15 @@ public class BankService {
         }
         String answer = "";
         for (int i = 0; i < urlregion.size(); i++) {
-            answer += urlregion.get(i).getFirst() + "\n" + urlvalue.getFirst() +
-                    "\n" + bankCurrency.bestBankSell(urlvalue.getSecond(), urlregion.get(i).getSecond())
-                    + "\n";
+            if (urlregion.get(i).getFirst().contains("ъ")) {
+                answer += urlregion.get(i).getFirst().substring(0, urlregion.get(i).getFirst().length() - 1) + "\n" + urlvalue.getFirst() +
+                        "\n" + bankCurrency.bestBankBuy(urlvalue.getSecond(), urlregion.get(i).getSecond())
+                        + "\n";
+            } else {
+                answer += urlregion.get(i).getFirst() + "\n" + urlvalue.getFirst() +
+                        "\n" + bankCurrency.bestBankBuy(urlvalue.getSecond(), urlregion.get(i).getSecond())
+                        + "\n";
+            }
         }
         return answer;
     }
@@ -205,9 +217,15 @@ public class BankService {
         }
         String answer = "";
         for (int i = 0; i < urlregion.size(); i++) {
-            answer += urlregion.get(i).getFirst() + "\n" + urlvalue.getFirst() +
-                    "\n" + bankCurrency.bestBankBuy(urlvalue.getSecond(), urlregion.get(i).getSecond())
-                    + "\n";
+            if (urlregion.get(i).getFirst().contains("ъ")) {
+                answer += urlregion.get(i).getFirst().substring(0, urlregion.get(i).getFirst().length() - 1) + "\n" + urlvalue.getFirst() +
+                        "\n" + bankCurrency.bestBankSell(urlvalue.getSecond(), urlregion.get(i).getSecond())
+                        + "\n";
+            } else {
+                answer += urlregion.get(i).getFirst() + "\n" + urlvalue.getFirst() +
+                        "\n" + bankCurrency.bestBankSell(urlvalue.getSecond(), urlregion.get(i).getSecond())
+                        + "\n";
+            }
         }
         return answer;
     }
