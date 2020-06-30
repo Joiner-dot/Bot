@@ -22,7 +22,7 @@ public class BankCurrency {
     private BankService service = null;
 
     public String currencyBank(String valute, String region) {
-        LOGGER.info("Берём информацию о васюте в указанном регионе");
+        LOGGER.info("Пытаемся взять информацию о валюте в указанном регионе");
         String message = "";
         service = new BankService();
         org.jsoup.nodes.Document doc = null;
@@ -111,7 +111,7 @@ public class BankCurrency {
     }
 
     public String centrBank(String date, String valute) {
-        LOGGER.info("Берём информацию о васюте в центробанке");
+        LOGGER.info("Пытаемся взять информацию о валюте в центробанке");
         String message = "";
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -132,7 +132,7 @@ public class BankCurrency {
             }
         } catch (ParserConfigurationException | IOException | SAXException e) {
             e.printStackTrace();
-            LOGGER.warning("Либо нет такого тего у центробанка, либо неправильные теги");
+            LOGGER.warning("Ошибка. Либо нет такого тега у центробанка, либо неправильные теги");
         }
         return message;
     }
