@@ -82,4 +82,14 @@ public class Tests {
             Assert.assertNotEquals("", thrown.getMessage());
         }
     }
+
+    @Test
+    public void addingBankTest ()
+    {
+        bankService = new BankService();
+        bankService.addingBank("ВТБ",11.2,10);
+        bankService.addingBank("ВТБ",11.2,10);
+        Assert.assertEquals(1,bankService.getBanks().size());
+    }
+
 }

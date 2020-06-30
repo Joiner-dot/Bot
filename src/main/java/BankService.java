@@ -113,7 +113,7 @@ public class BankService {
     /**
      * Перевод названия банка в url формат
      */
-    public List<Pair<String, String>> nameOfRegion(String name) {
+    private List<Pair<String, String>> nameOfRegion(String name) {
 
 
         List<Pair<String, String>> urlname = new ArrayList<>();
