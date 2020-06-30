@@ -47,7 +47,7 @@ public class Tests {
         bankService = new BankService();
         String message = bankService.bestBankCurrencySell("лучшая продажа банку доллара в санкт-петербурге");
         String[] splitname = message.split("\n");
-        Assert.assertEquals("Лучшая покупка у банка", splitname[2]);
+        Assert.assertEquals("Лучшая продажа банку", splitname[2]);
         splitdouble = splitname[4].split(" ");
         Double.parseDouble(splitdouble[1]);
         splitdouble = splitname[5].split(" ");
@@ -59,7 +59,7 @@ public class Tests {
         bankService = new BankService();
         String message = bankService.bestBankCurrencyBuy("лучшая покупка у банка доллара в санкт-петербурге");
         String[] splitname = message.split("\n");
-        Assert.assertEquals("Лучшая продажа банку", splitname[2]);
+        Assert.assertEquals("Лучшая покупка у банка", splitname[2]);
         splitdouble = splitname[4].split(" ");
         Double.parseDouble(splitdouble[1]);
         splitdouble = splitname[5].split(" ");

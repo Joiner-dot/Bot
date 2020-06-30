@@ -195,11 +195,11 @@ public class BankService {
         for (int i = 0; i < urlregion.size(); i++) {
             if (urlregion.get(i).getFirst().contains("ъ")) {
                 answer += urlregion.get(i).getFirst().substring(0, urlregion.get(i).getFirst().length() - 1) + "\n" + urlvalue.getFirst() +
-                        "\n" + bankCurrency.bestBankBuy(urlvalue.getSecond(), urlregion.get(i).getSecond())
+                        "\n" + bankCurrency.bestBankSell(urlvalue.getSecond(), urlregion.get(i).getSecond())
                         + "\n";
             } else {
                 answer += urlregion.get(i).getFirst() + "\n" + urlvalue.getFirst() +
-                        "\n" + bankCurrency.bestBankBuy(urlvalue.getSecond(), urlregion.get(i).getSecond())
+                        "\n" + bankCurrency.bestBankSell(urlvalue.getSecond(), urlregion.get(i).getSecond())
                         + "\n";
             }
         }
@@ -219,11 +219,11 @@ public class BankService {
         for (int i = 0; i < urlregion.size(); i++) {
             if (urlregion.get(i).getFirst().contains("ъ")) {
                 answer += urlregion.get(i).getFirst().substring(0, urlregion.get(i).getFirst().length() - 1) + "\n" + urlvalue.getFirst() +
-                        "\n" + bankCurrency.bestBankSell(urlvalue.getSecond(), urlregion.get(i).getSecond())
+                        "\n" + bankCurrency.bestBankBuy(urlvalue.getSecond(), urlregion.get(i).getSecond())
                         + "\n";
             } else {
                 answer += urlregion.get(i).getFirst() + "\n" + urlvalue.getFirst() +
-                        "\n" + bankCurrency.bestBankSell(urlvalue.getSecond(), urlregion.get(i).getSecond())
+                        "\n" + bankCurrency.bestBankBuy(urlvalue.getSecond(), urlregion.get(i).getSecond())
                         + "\n";
             }
         }
