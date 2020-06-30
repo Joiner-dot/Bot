@@ -52,7 +52,7 @@ public class Bot extends TelegramLongPollingBot {
                 try {
                     sendMsg(update.getMessage().getChatId().toString(),
                             "Здравствуйте, вы можете спросить меня какой курс валюты в" +
-                                    " городе региона или какой курс валюты лучший в городе региона\n" +
+                                    " городе региона или какой лучший курс продажи и покупки валюты в городе региона\n" +
                                     "Или какой курс валюты в центробанке\n" +
                                     "\nНапример: курс доллара в казани" +
                                     "\nИли: курс евро у центробанка (далее нужно будет указать дату следующим сообщением) \n" +
@@ -66,7 +66,7 @@ public class Bot extends TelegramLongPollingBot {
                 try {
                     sendMsg(update.getMessage().getChatId().toString(),
                             "Вы можете спросить меня какой курс валюты в" +
-                                    " городе региона или какой курс валюты лучший в городе региона\n" +
+                                    " городе региона или какой лучший курс продажи и покупки валюты в городе региона\n" +
                                     "Или какой курс валюты в центробанке\n" +
                                     "\nНапример: курс доллара в казани" +
                                     "\nИли: курс евро у центробанка (далее нужно будет указать дату следующим сообщением) \n" +
@@ -118,13 +118,28 @@ public class Bot extends TelegramLongPollingBot {
                     LOGGER.warning("Ошибка в отправке курса валюты в регионе");
                     e.printStackTrace();
                 }
-            } else if (update.getMessage().getText().toLowerCase().contains("лучш")
-                    || update.getMessage().getText().toLowerCase().contains("выгодн")) {
-                LOGGER.info("Отправить лушчий курс валюты в регионе");
+            } else if ((update.getMessage().getText().toLowerCase().contains("лучш")
+                    || update.getMessage().getText().toLowerCase().contains("выгодн"))
+                    && (update.getMessage().getText().toLowerCase().contains("купи")
+                    || update.getMessage().getText().toLowerCase().contains("покуп"))) {
+                LOGGER.info("Отправить лушчий курс покупки валюты у банка в регионе");
                 bankService = new BankService();
                 try {
                     sendMsg(update.getMessage().getChatId().toString(),
-                            bankService.bestBankCurrency(update.getMessage().getText()));
+                            bankService.bestBankCurrencyBuy(update.getMessage().getText()));
+                } catch (TelegramApiException e) {
+                    LOGGER.warning("Ошибка в отправке курса валюты в регионе");
+                    e.printStackTrace();
+                }
+            }
+            if ((update.getMessage().getText().toLowerCase().contains("лучш")
+                    || update.getMessage().getText().toLowerCase().contains("выгодн"))
+                    && update.getMessage().getText().toLowerCase().contains("прода")) {
+                LOGGER.info("Отправить лушчий курс продажи валюты у банка в регионе");
+                bankService = new BankService();
+                try {
+                    sendMsg(update.getMessage().getChatId().toString(),
+                            bankService.bestBankCurrencySell(update.getMessage().getText()));
                 } catch (TelegramApiException e) {
                     LOGGER.warning("Ошибка в отправке курса валюты в регионе");
                     e.printStackTrace();
@@ -162,7 +177,7 @@ public class Bot extends TelegramLongPollingBot {
                 try {
                     sendMsg(update.getMessage().getChatId().toString(),
                             "Здравсвуйте, вы можете спросить меня какой курс валюты в" +
-                                    " городе региона или какой курс валюты лучший в городе региона\n" +
+                                    " городе региона или какой лучший курс продажи и покупки валюты в городе региона\n" +
                                     "Или какой курс валюты в центробанке\n" +
                                     "\nНапример: курс доллара в казани" +
                                     "\nИли: курс евро у центробанка (да" +
@@ -179,7 +194,7 @@ public class Bot extends TelegramLongPollingBot {
                 try {
                     sendMsg(update.getMessage().getChatId().toString(),
                             "Вы можете спросить меня какой курс валюты в" +
-                                    " городе региона или какой курс валюты лучший в городе региона\n" +
+                                    " городе региона или какой лучший курс продажи и покупки валюты в городе региона\n" +
                                     "Или какой курс валюты в центробанке\n" +
                                     "\nНапример: курс доллара в казани" +
                                     "\nИли: курс евро у центробанка (да" +
@@ -228,14 +243,30 @@ public class Bot extends TelegramLongPollingBot {
                 }
             } else if (update.getMessage().getText().contains("@SonofFartherbot") &&
                     update.getMessage().getText().toLowerCase().contains("лучш")
-                    && update.getMessage().getText().toLowerCase().contains("выгодн")) {
-                LOGGER.info("Отправка лучшего в гурупповой чат курса валюты по региону");
+                    && update.getMessage().getText().toLowerCase().contains("выгодн")
+                    && (update.getMessage().getText().toLowerCase().contains("купи")
+                    || update.getMessage().getText().toLowerCase().contains("покуп"))) {
+                LOGGER.info("Отправить в групповой чат лушчий курс покупки валюты у банка в регионе");
                 bankService = new BankService();
                 try {
                     sendMsg(update.getMessage().getChatId().toString(),
-                            bankService.bestBankCurrency(update.getMessage().getText()));
+                            bankService.bestBankCurrencyBuy(update.getMessage().getText()));
                 } catch (TelegramApiException e) {
-                    LOGGER.warning("ошибка отправки  в гурупповой чат лучшего курса валюты по региону");
+                    LOGGER.warning("Ошибка в отправке курса валюты в регионе");
+                    e.printStackTrace();
+                }
+            }
+            if ((update.getMessage().getText().contains("@SonofFartherbot")
+                    && update.getMessage().getText().toLowerCase().contains("лучш")
+                    || update.getMessage().getText().toLowerCase().contains("выгодн"))
+                    && update.getMessage().getText().toLowerCase().contains("прода")) {
+                LOGGER.info("Отправить в групповой чат лушчий курс продажи валюты у банка в регионе");
+                bankService = new BankService();
+                try {
+                    sendMsg(update.getMessage().getChatId().toString(),
+                            bankService.bestBankCurrencySell(update.getMessage().getText()));
+                } catch (TelegramApiException e) {
+                    LOGGER.warning("Ошибка в отправке курса валюты в регионе");
                     e.printStackTrace();
                 }
             }

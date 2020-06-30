@@ -1,5 +1,4 @@
 import org.glassfish.grizzly.utils.Pair;
-import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -165,7 +164,7 @@ public class BankService {
     }
 
     //Лучший банк по курсу в регионе
-    public String bestBankCurrency(String name) {
+    public String bestBankCurrencySell(String name) {
         Pair<String, String> urlvalue = nameOfValute(name);
         List<Pair<String, String>> urlregion = nameOfRegion(name);
         if (urlvalue.getFirst().equals("xz")) {
@@ -177,7 +176,25 @@ public class BankService {
         String answer = "";
         for (int i = 0; i < urlregion.size(); i++) {
             answer += urlregion.get(i).getFirst() + "\n" + urlvalue.getFirst() +
-                    "\n" + bankCurrency.bestBank(urlvalue.getSecond(), urlregion.get(i).getSecond())
+                    "\n" + bankCurrency.bestBankSell(urlvalue.getSecond(), urlregion.get(i).getSecond())
+                    + "\n";
+        }
+        return answer;
+    }
+
+    public String bestBankCurrencyBuy(String name) {
+        Pair<String, String> urlvalue = nameOfValute(name);
+        List<Pair<String, String>> urlregion = nameOfRegion(name);
+        if (urlvalue.getFirst().equals("xz")) {
+            return "Не понимаю валюту";
+        }
+        if (urlregion.isEmpty()) {
+            return "Не понимаю Регион";
+        }
+        String answer = "";
+        for (int i = 0; i < urlregion.size(); i++) {
+            answer += urlregion.get(i).getFirst() + "\n" + urlvalue.getFirst() +
+                    "\n" + bankCurrency.bestBankBuy(urlvalue.getSecond(), urlregion.get(i).getSecond())
                     + "\n";
         }
         return answer;

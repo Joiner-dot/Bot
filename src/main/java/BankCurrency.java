@@ -132,23 +132,43 @@ public class BankCurrency {
         return message;
     }
 
-    public String bestBank(String urlvalute, String urlregion) {
+    public String bestBankSell(String urlvalute, String urlregion) {
 
-        LOGGER.info("Вычисляем банк с лючшим курсом указанной валюты в регионе");
+        LOGGER.info("Вычисляем банк с лючшим курсом продажи банку указанной валюты в регионе");
         service = new BankService();
-        double max = 1000000;
+        double max = -1;
         Bank bestbank = null;
         currencyBank(urlvalute, urlregion);
         for (Bank bank : service.getBanks()) {
-            if ((bank.getBuy() - bank.getSell()) < max) {
-                max = bank.getBuy() - bank.getSell();
+            if ((bank.getSell()) > max) {
+                max = bank.getBuy();
                 bestbank = bank;
             }
         }
         if (service.getBanks().isEmpty()) {
             return "Боюсь, что такого тут не делают";
         }
-        return (bestbank.getName() + "\nПродажа: " +
-                bestbank.getSell() + " RUB\nПокупка: " + bestbank.getBuy() + " RUB\n\n");
+        return ("Лучшая продажа у банка\n" + bestbank.getName() + "\nПокупка: " +
+                bestbank.getSell() + " RUB\nПродажа: " + bestbank.getBuy() + " RUB\n\n");
+    }
+
+    public String bestBankBuy(String urlvalute, String urlregion) {
+
+        LOGGER.info("Вычисляем банк с лючшим курсом покупки у банка указанной валюты в регионе");
+        service = new BankService();
+        double max = 100000;
+        Bank bestbank = null;
+        currencyBank(urlvalute, urlregion);
+        for (Bank bank : service.getBanks()) {
+            if ((bank.getBuy()) < max) {
+                max = bank.getSell();
+                bestbank = bank;
+            }
+        }
+        if (service.getBanks().isEmpty()) {
+            return "Боюсь, что такого тут не делают";
+        }
+        return ("Лучшая покупка у банка\n" + bestbank.getName() + "\nПокупка: " +
+                bestbank.getSell() + " RUB\nПродажа: " + bestbank.getBuy() + " RUB\n\n");
     }
 }

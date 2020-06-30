@@ -1,6 +1,5 @@
 import org.junit.Assert;
 import org.junit.Test;
-import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 public class Tests {
@@ -48,7 +47,7 @@ public class Tests {
     @Test
     public void bestBankTest() {
         bankService = new BankService();
-        String message = bankService.bestBankCurrency("лучший доллар в санкт-петербурге");
+        String message = bankService.bestBankCurrencySell("лучший доллар в санкт-петербурге");
         String[] splitname = message.split("\n");
         Assert.assertEquals("Санкт-Петербург", splitname[0]);
         Assert.assertEquals("Доллар", splitname[1]);
