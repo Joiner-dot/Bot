@@ -276,8 +276,8 @@ public class Bot extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
             } else if (update.getMessage().getText().contains("@SonofFartherbot") &&
-                    update.getMessage().getText().toLowerCase().contains("лучш")
-                    && update.getMessage().getText().toLowerCase().contains("выгодн")
+                    (update.getMessage().getText().toLowerCase().contains("лучш")
+                    || update.getMessage().getText().toLowerCase().contains("выгодн"))
                     && (update.getMessage().getText().toLowerCase().contains("купи")
                     || update.getMessage().getText().toLowerCase().contains("покуп")
                     || update.getMessage().getText().toLowerCase().contains("купл"))) {
