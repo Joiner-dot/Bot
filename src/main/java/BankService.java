@@ -87,14 +87,12 @@ public class BankService {
     }
 
     private boolean checkRegion(String name, Pair<String, String> pair) {
-        if (!(pair.getFirst().equalsIgnoreCase("Москва"))
-                && !(pair.getFirst().equals("Омскъ"))
-                && !(pair.getFirst().equals("Нижний Новгородъ"))
-        ) {
-            if (name.toLowerCase()
-                    .contains(pair.getFirst().toLowerCase().substring(0, pair.getFirst().length() - 1))) {
-                return true;
-            }
+
+        if (name.toLowerCase()
+                .contains(pair.getFirst().toLowerCase().substring(0, pair.getFirst().length() - 1))
+                && !pair.getFirst().equals("Уфа")
+                && !pair.getFirst().equals("Казань")) {
+            return true;
         } else if (pair.getFirst().equals("Москва")
                 && name.toLowerCase().contains(pair.getFirst().toLowerCase().substring(0, 4))) {
             return true;
@@ -105,6 +103,18 @@ public class BankService {
         } else if (pair.getFirst().equals("Омскъ")
                 && (name.toLowerCase().contains(" " + pair.getFirst().toLowerCase().substring(0, 4))
                 || name.toLowerCase().indexOf(pair.getFirst().toLowerCase().substring(0, 4)) == 0)) {
+            return true;
+        } else if (pair.getFirst().equals("Уфа")
+                && (name.toLowerCase().contains("уфа")
+                || name.toLowerCase().contains("уфе")
+                || name.toLowerCase().contains("уфи")
+                || name.toLowerCase().contains("уфы") )) {
+            return true;
+        } else if (pair.getFirst().equals("Казань")
+                && (name.toLowerCase()
+                .contains(pair.getFirst().toLowerCase().substring(0, pair.getFirst().length() - 1) + "и")
+                || name.toLowerCase()
+                .contains(pair.getFirst().toLowerCase().substring(0, pair.getFirst().length() - 1) + "ски"))) {
             return true;
         }
         return false;
