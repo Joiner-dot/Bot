@@ -90,7 +90,8 @@ public class BankService {
 
         if (name.toLowerCase()
                 .contains(pair.getFirst().toLowerCase().substring(0, pair.getFirst().length() - 1))
-                && !pair.getFirst().equals("Уфа")) {
+                && !pair.getFirst().equals("Уфа")
+                && !pair.getFirst().equals("Омскъ") ) {
             return true;
         } else if (pair.getFirst().equals("Москва")
                 && name.toLowerCase().contains(pair.getFirst().toLowerCase().substring(0, 4))) {
