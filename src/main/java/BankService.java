@@ -110,12 +110,6 @@ public class BankService {
                 || name.toLowerCase().contains("уфи")
                 || name.toLowerCase().contains("уфы") )) {
             return true;
-        } else if (pair.getFirst().equals("Казань")
-                && (name.toLowerCase()
-                .contains(pair.getFirst().toLowerCase().substring(0, pair.getFirst().length() - 1) + "и")
-                || name.toLowerCase()
-                .contains(pair.getFirst().toLowerCase().substring(0, pair.getFirst().length() - 1) + "ски"))) {
-            return true;
         }
         return false;
     }
