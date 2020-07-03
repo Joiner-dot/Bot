@@ -335,6 +335,8 @@ public class Bot extends TelegramLongPollingBot {
         }
     }
 
+
+
     //Отправка сообщения
     public synchronized void sendMsg(String chatId, String s) throws TelegramApiException {
         SendMessage sendMessage = new SendMessage();

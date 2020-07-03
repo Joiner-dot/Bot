@@ -1,4 +1,3 @@
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -13,18 +12,22 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 
 public class BankCurrency {
 
+    private List<Bank> banks = new ArrayList<>();
     private static final Logger LOGGER = Logger.getLogger(BankCurrency.class.getName());
-    private BankService service = null;
+    private boolean flag = false;
+
 
     public String currencyBank(String valute, String region) {
         LOGGER.info("Пытаемся взять информацию о валюте в указанном регионе");
-        String message = "";
-        service = new BankService();
+        StringBuilder message = new StringBuilder();
+        banks = new ArrayList<>();
         org.jsoup.nodes.Document doc = null;
         try {
             doc = Jsoup.connect("https://ru.myfin.by/currency/" + valute + "/" + region)
@@ -37,7 +40,7 @@ public class BankCurrency {
 
         parsingSiteMyfin(doc, valute);
 
-        if (service.getBanks().isEmpty()) {
+        if (banks.isEmpty()) {
             try {
                 doc = Jsoup.connect("https://www.banki.ru/products/currency/cash/" + valute + "/" + region + "/")
                         .userAgent("Chrome/4.0.249.0 Safari/532.5")
@@ -50,18 +53,18 @@ public class BankCurrency {
             parsingBankru(doc);
 
         }
-        if (service.getBanks().isEmpty()) {
+        if (banks.isEmpty()) {
             return "Тут о такой валюте не знают";
         }
-        for (Bank bank : service.getBanks()) {
-            message += (bank.getName() + "\nПокупка: "
-                    + bank.getSell() + " RUB\nПродажа: " + bank.getBuy() + " RUB\n\n");
+        for (Bank bank : banks) {
+            message.append(bank.getName()).append("\nПокупка: ").append(bank.getSell()).append(" RUB\nПродажа: ")
+                    .append(bank.getBuy()).append(" RUB\n\n");
         }
-        return message;
+        return message.toString();
     }
 
     private void parsingSiteMyfin(org.jsoup.nodes.Document doc, String valute) {
-        String message = "";
+        String message;
         double sell;
         double buy;
         int j = 0;
@@ -76,7 +79,7 @@ public class BankCurrency {
                 i++;
                 buy = Double.parseDouble(list2currency.get(i).text());
                 i++;
-                service.addingBank(message, sell, buy);
+                addingBank(message, sell, buy);
                 j++;
             }
         } catch (NullPointerException e) {
@@ -103,7 +106,7 @@ public class BankCurrency {
                 j++;
                 message = lists.get(i).text();
                 i++;
-                service.addingBank(message, sell, buy);
+                addingBank(message, sell, buy);
             }
         } catch (NullPointerException e) {
             LOGGER.warning("Нет таких тегов для banki.ru");
@@ -140,17 +143,17 @@ public class BankCurrency {
     public String bestBankSell(String urlvalute, String urlregion) {
 
         LOGGER.info("Вычисляем банк с лучшим курсом продажи банку указанной валюты в регионе");
-        service = new BankService();
+        banks = new ArrayList<>();
         double max = -1;
         Bank bestbank = null;
         currencyBank(urlvalute, urlregion);
-        for (Bank bank : service.getBanks()) {
+        for (Bank bank : banks) {
             if ((bank.getSell()) > max) {
                 max = bank.getSell();
                 bestbank = bank;
             }
         }
-        if (service.getBanks().isEmpty()) {
+        if (banks.isEmpty()) {
             return "Боюсь, что такого тут не делают";
         }
         return ("Лучшая продажа банку\n" + bestbank.getName() + "\nПокупка: " +
@@ -160,20 +163,38 @@ public class BankCurrency {
     public String bestBankBuy(String urlvalute, String urlregion) {
 
         LOGGER.info("Вычисляем банк с лучшим курсом покупки у банка указанной валюты в регионе");
-        service = new BankService();
+        banks = new ArrayList<>();
         double max = 100000;
         Bank bestbank = null;
         currencyBank(urlvalute, urlregion);
-        for (Bank bank : service.getBanks()) {
+        for (Bank bank : banks) {
             if ((bank.getBuy()) < max) {
                 max = bank.getBuy();
                 bestbank = bank;
             }
         }
-        if (service.getBanks().isEmpty()) {
+        if (banks.isEmpty()) {
             return "Боюсь, что такого тут не делают";
         }
         return ("Лучшая покупка у банка\n" + bestbank.getName() + "\nПокупка: " +
                 bestbank.getSell() + " RUB\nПродажа: " + bestbank.getBuy() + " RUB\n\n");
+    }
+
+    public void addingBank(String name, double sell, double buy) {
+        if (banks.size() < 5) {
+            for (Bank bank : banks) {
+                if (bank.getName().equalsIgnoreCase(name)) {
+                    flag = true;
+                }
+            }
+            if (!flag) {
+                banks.add(new Bank(name, sell, buy));
+            }
+            flag = false;
+        }
+    }
+
+    public List<Bank> getBanks() {
+        return banks;
     }
 }

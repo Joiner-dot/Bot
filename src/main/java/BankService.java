@@ -5,8 +5,6 @@ import java.util.List;
 
 public class BankService {
 
-    private List<Bank> banks = new ArrayList<>();
-    private boolean flag = false;
     private BankCurrency bankCurrency = new BankCurrency();
     private List<Pair<String, String>> region = new ArrayList<>();
     private List<Pair<String, String>> valute = new ArrayList<>();
@@ -52,39 +50,10 @@ public class BankService {
     }
 
 
-    public boolean isFlag() {
-        return flag;
-    }
-
-    public void setFlag(boolean flag) {
-        this.flag = flag;
-    }
-
-    public List<Bank> getBanks() {
-        return banks;
-    }
-
-    public void setBanks(List<Bank> banks) {
-        this.banks = banks;
-    }
-
     /**
      * Добавление банка и проверка на повторение
      */
-    public void addingBank(String name, double sell, double buy) {
-        if (banks.size() < 5) {
-            for (Bank bank : banks) {
 
-                if (bank.getName().equalsIgnoreCase(name)) {
-                    flag = true;
-                }
-            }
-            if (!flag) {
-                banks.add(new Bank(name, sell, buy));
-            }
-            flag = false;
-        }
-    }
 
     private boolean checkRegion(String name, Pair<String, String> pair) {
 
@@ -155,7 +124,7 @@ public class BankService {
             }
 
         }
-        return new Pair<String, String>("xz", "xz");
+        return new Pair<>("xz", "xz");
     }
 
     /**

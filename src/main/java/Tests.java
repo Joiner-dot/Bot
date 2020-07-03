@@ -86,10 +86,10 @@ public class Tests {
     @Test
     public void addingBankTest ()
     {
-        bankService = new BankService();
-        bankService.addingBank("ВТБ",11.2,10);
-        bankService.addingBank("ВТБ",11.2,10);
-        Assert.assertEquals(1,bankService.getBanks().size());
+        BankCurrency bankCurrency = new BankCurrency();
+        bankCurrency.addingBank("ВТБ",11.2,10);
+        bankCurrency.addingBank("ВТБ",11.2,10);
+        Assert.assertEquals(1,bankCurrency.getBanks().size());
     }
 
 }
