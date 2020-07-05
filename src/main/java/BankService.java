@@ -60,7 +60,7 @@ public class BankService {
         if (name.toLowerCase()
                 .contains(pair.getFirst().toLowerCase().substring(0, pair.getFirst().length() - 1))
                 && !pair.getFirst().equals("Уфа")
-                && !pair.getFirst().equals("Омскъ") ) {
+                && !pair.getFirst().equals("Омскъ")) {
             return true;
         } else if (pair.getFirst().equals("Москва")
                 && name.toLowerCase().contains(pair.getFirst().toLowerCase().substring(0, 4))) {
@@ -77,7 +77,7 @@ public class BankService {
                 && (name.toLowerCase().contains("уфа")
                 || name.toLowerCase().contains("уфе")
                 || name.toLowerCase().contains("уфи")
-                || name.toLowerCase().contains("уфы") )) {
+                || name.toLowerCase().contains("уфы"))) {
             return true;
         }
         return false;
@@ -129,6 +129,8 @@ public class BankService {
 
     /**
      * Курс валют по региону
+     *
+     * @param name
      */
     public String currencyofRegion(String name) {
         Pair<String, String> urlvalue = nameOfValute(name);
@@ -142,12 +144,13 @@ public class BankService {
         }
         for (int i = 0; i < urlregion.size(); i++) {
             if (urlregion.get(i).getFirst().contains("ъ")) {
-                answer += urlregion.get(i).getFirst().substring(0, urlregion.get(i).getFirst().length() - 1) + "\n" + urlvalue.getFirst() +
-                        "\n" + bankCurrency.currencyBank(urlvalue.getSecond(), urlregion.get(i).getSecond())
+                answer += urlregion.get(i).getFirst().substring(0, urlregion.get(i).getFirst().length() - 1)
+                        + "\n" + urlvalue.getFirst()
+                        + "\n" + bankCurrency.currencyOfBanks(urlvalue.getSecond(), urlregion.get(i).getSecond())
                         + "\n";
             } else {
                 answer += urlregion.get(i).getFirst() + "\n" + urlvalue.getFirst() +
-                        "\n" + bankCurrency.currencyBank(urlvalue.getSecond(), urlregion.get(i).getSecond())
+                        "\n" + bankCurrency.currencyOfBanks(urlvalue.getSecond(), urlregion.get(i).getSecond())
                         + "\n";
             }
         }
@@ -207,7 +210,7 @@ public class BankService {
 
     public String centerBank(String date, String valute) {
         Pair<String, String> urlvalute = nameOfValute(valute);
-        String answer = bankCurrency.centrBank(date, urlvalute.getSecond());
+        String answer = bankCurrency.centreBank(date, urlvalute.getSecond());
         if (urlvalute.getFirst().equals("xz")) {
             return "Не понимаю валюту";
         }

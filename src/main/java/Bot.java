@@ -1,5 +1,6 @@
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
+import org.telegram.telegrambots.api.objects.stickers.Sticker;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
@@ -36,7 +37,6 @@ public class Bot extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
             }
-            // Если уже указана валюта для центробанка
             if (flag) {
                 right = true;
                 LOGGER.info("Просьба указать дату в правильном формате");

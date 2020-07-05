@@ -19,40 +19,17 @@ import java.util.logging.Logger;
 
 public class BankCurrency {
 
-    private List<Bank> banks = new ArrayList<>();
     private static final Logger LOGGER = Logger.getLogger(BankCurrency.class.getName());
-    private boolean flag = false;
 
-
-    public String currencyBank(String valute, String region) {
-        LOGGER.info("Пытаемся взять информацию о валюте в указанном регионе");
+    /**
+     * Вычисляет набор из неболее 5 банков региона и передает в новый banks
+     *
+     * @param valute
+     * @param region
+     */
+    public String currencyOfBanks(String valute, String region) {
         StringBuilder message = new StringBuilder();
-        banks = new ArrayList<>();
-        org.jsoup.nodes.Document doc = null;
-        try {
-            doc = Jsoup.connect("https://ru.myfin.by/currency/" + valute + "/" + region)
-                    .userAgent("Chrome/4.0.249.0 Safari/532.5")
-                    .referrer("http://www.google.com")
-                    .get();
-        } catch (IOException e) {
-            LOGGER.warning("Неверный url сайта для сайта myfin.ru");
-        }
-
-        parsingSiteMyfin(doc, valute);
-
-        if (banks.isEmpty()) {
-            try {
-                doc = Jsoup.connect("https://www.banki.ru/products/currency/cash/" + valute + "/" + region + "/")
-                        .userAgent("Chrome/4.0.249.0 Safari/532.5")
-                        .referrer("http://www.google.com")
-                        .get();
-            } catch (IOException e) {
-                LOGGER.warning("Неверный url сайта");
-            }
-
-            parsingBankru(doc);
-
-        }
+        List<Bank> banks = banksOfRegion(valute, region);
         if (banks.isEmpty()) {
             return "Тут о такой валюте не знают";
         }
@@ -63,7 +40,76 @@ public class BankCurrency {
         return message.toString();
     }
 
-    private void parsingSiteMyfin(org.jsoup.nodes.Document doc, String valute) {
+
+    public String bestBankSell(String urlvalute, String urlregion) {
+        LOGGER.info("Вычисляем банк с лучшим курсом продажи банку указанной валюты в регионе");
+        List<Bank> banks = banksOfRegion(urlvalute, urlregion);
+        double max = -1;
+        Bank bestbank = null;
+        banksOfRegion(urlvalute, urlregion);
+        for (Bank bank : banks) {
+            if ((bank.getSell()) > max) {
+                max = bank.getSell();
+                bestbank = bank;
+            }
+        }
+        if (bestbank != null) {
+            return ("Лучшая продажа банку\n" + bestbank.getName() + "\nПокупка: " +
+                    bestbank.getSell() + " RUB\nПродажа: " + bestbank.getBuy() + " RUB\n\n");
+        } else {
+            return "Банков тут нет";
+        }
+    }
+
+
+    public String bestBankBuy(String urlvalute, String urlregion) {
+        LOGGER.info("Вычисляем банк с лучшим курсом покупки у банка указанной валюты в регионе");
+        double max = 100000;
+        Bank bestbank = null;
+        List<Bank> banks = banksOfRegion(urlvalute, urlregion);
+        for (Bank bank : banks) {
+            if ((bank.getBuy()) < max) {
+                max = bank.getBuy();
+                bestbank = bank;
+            }
+        }
+        if (bestbank != null) {
+            return ("Лучшая покупка у банка\n" + bestbank.getName() + "\nПокупка: " +
+                    bestbank.getSell() + " RUB\nПродажа: " + bestbank.getBuy() + " RUB\n\n");
+        } else {
+            return "Банков тут нет";
+        }
+    }
+
+
+    public List<Bank> banksOfRegion(String valute, String region) {
+        List<Bank> banks = new ArrayList<>();
+        LOGGER.info("Пытаемся взять информацию о валюте в указанном регионе");
+        org.jsoup.nodes.Document doc = null;
+        try {
+            doc = Jsoup.connect("https://ru.myfin.by/currency/" + valute + "/" + region)
+                    .userAgent("Chrome/4.0.249.0 Safari/532.5")
+                    .referrer("http://www.google.com")
+                    .get();
+        } catch (IOException e) {
+            LOGGER.warning("Неверный url сайта для сайта myfin.ru");
+        }
+        parsingSiteMyfin(banks, doc, valute);
+        if (banks.isEmpty()) {
+            try {
+                doc = Jsoup.connect("https://www.banki.ru/products/currency/cash/" + valute + "/" + region + "/")
+                        .userAgent("Chrome/4.0.249.0 Safari/532.5")
+                        .referrer("http://www.google.com")
+                        .get();
+            } catch (IOException e) {
+                LOGGER.warning("Неверный url сайта");
+            }
+            parsingBankru(banks, doc);
+        }
+        return banks;
+    }
+
+    private void parsingSiteMyfin(List<Bank> banks, org.jsoup.nodes.Document doc, String valute) {
         String message;
         double sell;
         double buy;
@@ -79,7 +125,7 @@ public class BankCurrency {
                 i++;
                 buy = Double.parseDouble(list2currency.get(i).text());
                 i++;
-                addingBank(message, sell, buy);
+                addingBank(banks, message, sell, buy);
                 j++;
             }
         } catch (NullPointerException e) {
@@ -87,7 +133,7 @@ public class BankCurrency {
         }
     }
 
-    private void parsingBankru(org.jsoup.nodes.Document doc) {
+    private void parsingBankru(List<Bank> banks, org.jsoup.nodes.Document doc) {
         Element element;
         int j = 0;
         int i = 0;
@@ -106,19 +152,19 @@ public class BankCurrency {
                 j++;
                 message = lists.get(i).text();
                 i++;
-                addingBank(message, sell, buy);
+                addingBank(banks, message, sell, buy);
             }
         } catch (NullPointerException e) {
             LOGGER.warning("Нет таких тегов для banki.ru");
         }
     }
 
-    public String centrBank(String date, String valute) {
+    public String centreBank(String date, String valute) {
         LOGGER.info("Пытаемся взять информацию о валюте в центробанке");
         String message = "";
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dbuilder = null;
+            DocumentBuilder dbuilder;
             dbuilder = dbFactory.newDocumentBuilder();
             Document doc = dbuilder.parse(
                     new InputSource(
@@ -128,8 +174,8 @@ public class BankCurrency {
             Node node;
             for (int i = 0; i < nodes.getLength(); i++) {
                 node = nodes.item(i).getChildNodes().item(1);
-                if (node.getTextContent().toLowerCase().contains(valute.substring(0, valute.length()))) {
-                    message = message + (nodes.item(i).getChildNodes().item(3).getTextContent() + "\n"
+                if (node.getTextContent().toLowerCase().contains(valute)) {
+                    message += (nodes.item(i).getChildNodes().item(3).getTextContent() + "\n"
                             + nodes.item(i).getLastChild().getTextContent() + " RUB\n\n");
                 }
             }
@@ -140,61 +186,14 @@ public class BankCurrency {
         return message;
     }
 
-    public String bestBankSell(String urlvalute, String urlregion) {
-
-        LOGGER.info("Вычисляем банк с лучшим курсом продажи банку указанной валюты в регионе");
-        banks = new ArrayList<>();
-        double max = -1;
-        Bank bestbank = null;
-        currencyBank(urlvalute, urlregion);
-        for (Bank bank : banks) {
-            if ((bank.getSell()) > max) {
-                max = bank.getSell();
-                bestbank = bank;
-            }
-        }
-        if (banks.isEmpty()) {
-            return "Боюсь, что такого тут не делают";
-        }
-        return ("Лучшая продажа банку\n" + bestbank.getName() + "\nПокупка: " +
-                bestbank.getSell() + " RUB\nПродажа: " + bestbank.getBuy() + " RUB\n\n");
-    }
-
-    public String bestBankBuy(String urlvalute, String urlregion) {
-
-        LOGGER.info("Вычисляем банк с лучшим курсом покупки у банка указанной валюты в регионе");
-        banks = new ArrayList<>();
-        double max = 100000;
-        Bank bestbank = null;
-        currencyBank(urlvalute, urlregion);
-        for (Bank bank : banks) {
-            if ((bank.getBuy()) < max) {
-                max = bank.getBuy();
-                bestbank = bank;
-            }
-        }
-        if (banks.isEmpty()) {
-            return "Боюсь, что такого тут не делают";
-        }
-        return ("Лучшая покупка у банка\n" + bestbank.getName() + "\nПокупка: " +
-                bestbank.getSell() + " RUB\nПродажа: " + bestbank.getBuy() + " RUB\n\n");
-    }
-
-    public void addingBank(String name, double sell, double buy) {
+    public void addingBank(List<Bank> banks, String name, double sell, double buy) {
         if (banks.size() < 5) {
             for (Bank bank : banks) {
                 if (bank.getName().equalsIgnoreCase(name)) {
-                    flag = true;
+                    return;
                 }
             }
-            if (!flag) {
-                banks.add(new Bank(name, sell, buy));
-            }
-            flag = false;
+            banks.add(new Bank(name, sell, buy));
         }
-    }
-
-    public List<Bank> getBanks() {
-        return banks;
     }
 }

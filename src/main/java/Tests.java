@@ -2,6 +2,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Tests {
     Bot bot = new Bot();
     String[] splitdouble;
@@ -84,12 +87,12 @@ public class Tests {
     }
 
     @Test
-    public void addingBankTest ()
-    {
+    public void addingBankTest() {
+        List<Bank> banks = new ArrayList<>();
         BankCurrency bankCurrency = new BankCurrency();
-        bankCurrency.addingBank("ВТБ",11.2,10);
-        bankCurrency.addingBank("ВТБ",11.2,10);
-        Assert.assertEquals(1,bankCurrency.getBanks().size());
+        bankCurrency.addingBank(banks, "ВТБ", 11.2, 10);
+        bankCurrency.addingBank(banks, "ВТБ", 11.2, 10);
+        Assert.assertEquals(1, banks.size());
     }
 
 }
