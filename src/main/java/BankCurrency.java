@@ -46,7 +46,6 @@ public class BankCurrency {
         List<Bank> banks = banksOfRegion(urlvalute, urlregion);
         double max = -1;
         Bank bestbank = null;
-        banksOfRegion(urlvalute, urlregion);
         for (Bank bank : banks) {
             if ((bank.getSell()) > max) {
                 max = bank.getSell();
