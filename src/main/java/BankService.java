@@ -87,8 +87,6 @@ public class BankService {
      * Перевод названия банка в url формат
      */
     private List<Pair<String, String>> nameOfRegion(String name) {
-
-
         List<Pair<String, String>> urlname = new ArrayList<>();
 
         for (Pair<String, String> pair : region) {
